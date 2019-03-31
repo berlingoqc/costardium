@@ -1,6 +1,6 @@
 GAME_REPO := $(shell pwd)
 
-CURRENT_BRANCH := $(git symbolic-ref --short -q HEAD)
+BRANCH := $(shell git symbolic-ref --short -q HEAD)
 
 UE_PROJECT_EXT := .uproject
 
@@ -19,16 +19,15 @@ clean:
 	# supprime la cache de unreal
 	@rm -rf ./DerivedDataCache ./Intermediate ./Saved
 	# supprime mes trucs que j'ai builder
-	@rm -rf .
+	@rm -rf *.zip
 
 build:
-	
 	$(BUILD_TOOL) -project="$(PROJECT_FULL_PATH)" \
 		-cook -NoCompile -allmaps -build -stage -pak \
 		-archive -archivedirectory="./"
 
 pack:
-	@zip -r $(PROJECT)_$(BRANCH).zip . -x \./DerivedDataCache\ \./Intermediate\ \./Saved\
+	@zip -r $(PROJECT)_$(BRANCH).zip . -x \*DerivedDataCache\* \*Intermediate\* \*Saved\* \*.git\*
 
 release: build pack
 	# upload le resultat dans un VM
